@@ -6,19 +6,18 @@ const addUser = async (req,res) =>{
     try {
 
         // User exist?
-        let existingUser = await userSchema.findOne({email: req.body.email})
-        if(existingUser) return res.status(400).send("User already exist");
-        // Else add one
-
+        let user = await userSchema.findOne({email: req.body.email})
+        if(user) return res.status(400).send("User already exist");
+        // Else encrypt password and save one
         const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(req.body.password,salt);
+        req.body.password = await bcrypt.hash(req.body.password,salt);
+        user = new userSchema(_.pick(req.body,['_id','name','email','password']));
+        await user.save();
+        // Return added user
 
-        const newUser = await userSchema.create({
-            name:req.body.name,
-            email:req.body.email,
-            password:hashed
-        })
-        res.status(200).send(_.pick(newUser,['_id','name','email','password']));
+
+
+        res.status(200).send(_.pick(user,['_id','name','email','password']));
         
     } catch (error) {
         res.status(400).json({
@@ -35,6 +34,7 @@ const fetchUser = async(req,res)=>{
             message:'Retrieved user',
             user : getUser
         })
+     
         
     } catch (error) {
         res.status(400).json({
