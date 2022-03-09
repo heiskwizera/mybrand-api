@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import { blogCRUD } from '../ controllers/blogsController.js';
+// import { jwtauth } from '../middlewares/jwt_auth.js';
+
+
 const router = Router();
 
 // Creating a blog
