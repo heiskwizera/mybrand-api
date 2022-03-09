@@ -13,6 +13,8 @@ router.get('/', userCRUD.fetchUsers);
 // Getting single user
 router.get('/:id', userCRUD.fetchUser);
 
+// Updating user information
+router.put('/:id',userCRUD.updateUser)
 
 // Deleting a user
 router.delete('/:id', userCRUD.deleteUser);
