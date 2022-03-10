@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-
+import jwt from "jsonwebtoken";
+import 'dotenv/config'
 const userSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -21,5 +22,10 @@ const userSchema = new mongoose.Schema({
         maxlength:1024
     }
 });
+
+userSchema.methods.generateAuthToken = function(){
+    const token = jwt.sign({_id:this._id},process.env.JWT_TOKEN);
+    return token;
+}
 
 export default new mongoose.model('user',userSchema);

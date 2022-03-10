@@ -1,6 +1,5 @@
 import userSchema from "../models/userSchema.js";
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken';
 
 export const loginAttempt = async(req,res)=>{
     try{
@@ -11,7 +10,8 @@ export const loginAttempt = async(req,res)=>{
           const validPassword = await bcrypt.compare(req.body.password,existingUser.password);
           if(!validPassword) return res.status(400).send("Invalid email or password");
 
-          const token = jwt.sign({_id:existingUser._id},process.env.JWT_TOKEN);
+        //   If yes Bind Auth token to a user
+          const token = existingUser.generateAuthToken();
           res.send(token);
 
         //   res.status(200).json({

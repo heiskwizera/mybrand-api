@@ -10,10 +10,18 @@ import { skills } from './routes/skills.js';
 import {users} from './routes/users.js';
 import {admin} from './routes/login.js';
 
+
+
+// Checking the token
 if(!process.env.JWT_TOKEN){
     console.log('FATAL ERROR : JwtPrivateKey is not defined');
     process.exit(1);
 }
+
+// Implementing db connection
+mongoose.connect(process.env.DATABASE_URL)
+.then(()=>console.log('Connected'))
+.catch(err=>console.log('Failed',err));
 
 
 app.use(express.json()) // Middleware return req.body in json format
@@ -27,14 +35,9 @@ app.use('/login',admin);
 
 // Building web server
 app.listen(process.env.PORT, () =>
-    console.log(`Listening to port ${process.env.PORT}`)
+    console.log(`Listening to the port  ${process.env.PORT}`)
 );
 
-// Testing db connection
-
-mongoose.connect(process.env.DATABASE_URL)
-.then(()=>console.log('Connected'))
-.catch(err=>console.log('Failed',err));
 
 
 

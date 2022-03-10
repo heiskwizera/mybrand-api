@@ -10,13 +10,13 @@ const addBlog = async (req, res) => {
             content: req.body.content
         })
         res.status(200).json({
-            message: "New blog is added",
+            message: `Here is your new created blog`,
             result: post
         })
 
     } catch (error) {
-        res.status(500).json({
-            message: "error"
+        res.status(401).json({
+            message: `Error occured while trying to create a blog! ${error}`
         })
     }
 
@@ -27,12 +27,12 @@ const fetchBlogs = async (req, res) => {
     try {
         const allPosts = await blogSchema.find({})
         res.status(200).json({
-            message: "Retrieved the blogs",
+            message: "List of the blogs",
             blogs: allPosts
         })
     } catch (error) {
         res.status(400).json({
-            message: "Failed"
+            message: `Failed to retrieve posts! ${error}`
         })
 
     }
@@ -45,13 +45,13 @@ const fetchBlog = async (req, res) => {
         const blogId = req.params.id;
         const blog = await blogSchema.findById(blogId)
         res.status(200).json({
-            message: "Retrieved a blog",
+            message: "View your blog",
             result: blog
         })
 
     } catch (error) {
         res.status(400).json({
-            message: error
+            message: `Cannot view your post! ${error}`
         })
     }
 }
@@ -64,12 +64,13 @@ const updateBlog = async (req, res) => {
         const blogId = req.params.id;
         const changes = await blogSchema.findByIdAndUpdate(blogId, req.body, { new: true });
         res.status(200).json({
-            message: "Updated blog"
+            message: "Here is your updated blog",
+            updated : changes
         })
 
     } catch (error) {
         res.status(400).json({
-            message: error
+            message: `Cannot update post! ${error}`
         })
     }
 }
@@ -81,11 +82,12 @@ const deleteBlog = async(req,res)=>{
         const blogId = req.params.id;
         await blogSchema.findByIdAndRemove(blogId)
         res.status(200).json({
-            message:"Deleted a blog"
+            message:"Deleted a blog",
+            blog : null
         })
     } catch (error) {
         res.status(400).json({
-            message:error
+            message:`Failed to delete a blog! Error : ${error}`
         })
     }
 }

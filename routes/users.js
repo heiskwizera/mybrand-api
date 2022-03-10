@@ -1,22 +1,26 @@
 import { Router } from 'express';
 import { userCRUD } from '../ controllers/userController.js';
+import { jwtauth } from '../middlewares/jwt_auth.js';
 const router = Router();
 
-
 // Creating a user
-router.post('/', userCRUD.addUser);
+router.post('/', jwtauth,userCRUD.addUser);
 
 
 // Getting all users
-router.get('/', userCRUD.fetchUsers);
+router.get('/', jwtauth,userCRUD.fetchUsers);
 
 // Getting single user
-router.get('/:id', userCRUD.fetchUser);
+router.get('/:id', jwtauth,userCRUD.fetchUser);
+
+
+// Getting signed in user
+router.get('./me',jwtauth,userCRUD.SignedUser)
 
 // Updating user information
-router.put('/:id',userCRUD.updateUser)
+router.put('/:id',jwtauth,userCRUD.updateUser)
 
 // Deleting a user
-router.delete('/:id', userCRUD.deleteUser);
+router.delete('/:id', jwtauth,userCRUD.deleteUser);
 
 export const users = router;
