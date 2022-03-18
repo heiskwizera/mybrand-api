@@ -7,14 +7,14 @@ const addSkill = async (req, res) => {
             skill: req.body.skill,
             percentage: req.body.percentage
         })
-        res.status(200).json({
-            message: "New Skill is added",
+        res.status(201).json({
+            response: "New Skill is added",
             result: mySkills
         })
 
     } catch (error) {
         res.status(500).json({
-            message: `Error : ${error}`
+            response: `Error : ${error}`
         })
     }
 
@@ -24,13 +24,13 @@ const addSkill = async (req, res) => {
 const fetchSkills = async (req, res) => {
     try {
         const allSkills = await skillSchema.find({})
-        res.status(200).json({
-            message: "Retrieved skills",
+        res.status(201).json({
+            response: "Retrieved skills",
             skills: allSkills
         })
     } catch (error) {
         res.status(400).json({
-            message: `Error : ${error}`
+            response: `Error : ${error}`
         })
 
     }
@@ -40,14 +40,14 @@ const fetchSkills = async (req, res) => {
 
 const fetchSkill = async (req, res) => {
     try {
-        const skill = await skillSchema.findById(id)
-        res.status(200).json({
-            message: "Skill retrieved",
+        const skill = await skillSchema.findById(req.params.id)
+        res.status(201).json({
+            response: "Skill retrieved",
             messages: skill
         })
     } catch (error) {
         res.status(400).json({
-            message:`Bad request! Error : ${error}`
+            response: `Bad request! Error : ${error}`
         })
     }
 }
@@ -59,31 +59,31 @@ const updateSkill = async (req, res) => {
 
         const skillId = req.params.id;
         const changes = await skillSchema.findByIdAndUpdate(skillId, req.body, { new: true });
-        res.status(200).json({
-            message: "Updated skill",
-            skill : changes
+        res.status(201).json({
+            response: "Updated skill",
+            skill: changes
         })
 
     } catch (error) {
         res.status(400).json({
-            message: error
+            response: error
         })
     }
 }
 
 // Deleting a skill
-const deleteSkill = async(req,res)=>{
+const deleteSkill = async (req, res) => {
     try {
         const skillId = req.params.id;
         await skillSchema.findByIdAndRemove(skillId)
-        res.status(200).json({
-            message:"Deleted a Skill"
+        res.status(201).json({
+            response: "Deleted a Skill"
         })
     } catch (error) {
         res.status(400).json({
-            message:error
+            response: error
         })
     }
 }
 
-export const SkillCRUD = {addSkill,fetchSkill,fetchSkills,updateSkill,deleteSkill};
+export const SkillCRUD = { addSkill, fetchSkill, fetchSkills, updateSkill, deleteSkill };

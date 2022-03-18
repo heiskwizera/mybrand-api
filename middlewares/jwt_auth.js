@@ -1,17 +1,29 @@
 import jwt from 'jsonwebtoken';
-import 'dotenv/config';
-function auth (req, res, next){
+import config from '../config.js';
+
+const { secret } = config;
+
+function validToken(req, res, next) {
+
+    // Defining token
     const token = req.header('x-auth-token');
-    if(!token) return res.status(401).send('Access denied. No token provided');
+
+    // Condition to identifying token
+    if (!token) return res.status(401).json({
+        response: '⚠️ Access denied. No token provided'
+    });
 
     try {
-        const decoded = jwt.verify(token,process.env.JWT_TOKEN);
-        req.user = decoded;
+        // Verifying the token string value against secret key
+        const decodedObject = jwt.verify(token, secret);
+        req.user = decodedObject;
         next();
     } catch (error) {
-        res.status(400).send(`Invalid token : ${error}`)
+        res.status(400).json({
+            response: `Invalid token : ${error}`
+        })
     }
-    
+
 }
 
-export const jwtauth = auth;
+export const auth = validToken;
