@@ -7,16 +7,16 @@ const addMessage = async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             subject: req.body.subject,
-            message: req.body.message
+            response: req.body.message
         })
-        res.status(200).json({
-            message: "New message is added",
+        res.status(201).json({
+            response: "New message is added",
             result: message
         })
 
     } catch (error) {
         res.status(500).json({
-            message: `Error : ${error}`
+            response: `Error : ${error}`
         })
     }
 }
@@ -25,13 +25,13 @@ const addMessage = async (req, res) => {
 const fetchMessages = async (req, res) => {
     try {
         const allMessages = await messageSchema.find({})
-        res.status(200).json({
-            message: "Messages retrieved",
+        res.status(201).json({
+            response: "Messages retrieved",
             messages: allMessages
         })
     } catch (error) {
         res.status(400).json({
-            message:`Bad request! Error : ${error}`
+            response: `Bad request! Error : ${error}`
         })
     }
 }
@@ -42,30 +42,30 @@ const fetchMessage = async (req, res) => {
     try {
         const MessageId = req.params.id;
         const Message = await messageSchema.findById(MessageId)
-        res.status(200).json({
-            message: "Message retrieved",
+        res.status(201).json({
+            response: "Message retrieved",
             messages: Message
         })
     } catch (error) {
         res.status(400).json({
-            message:`Bad request! Error : ${error}`
+            response: `🚫 No record found`
         })
     }
 }
 
 // Deleting a message
-const deleteMessage = async(req,res)=>{
+const deleteMessage = async (req, res) => {
     try {
         const MessageId = req.params.id;
         await messageSchema.findByIdAndRemove(MessageId)
-        res.status(200).json({
-            message:"Deleted a Message"
+        res.status(201).json({
+            response: "Deleted a Message"
         })
     } catch (error) {
         res.status(400).json({
-            message:error
+            response: error
         })
     }
 }
 
-export const messageCRUD={addMessage,fetchMessage,fetchMessages,deleteMessage}
+export const messageCRUD = { addMessage, fetchMessage, fetchMessages, deleteMessage }
