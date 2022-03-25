@@ -23,14 +23,6 @@ describe('BLOGS End points', () => {
         }, 50000);
     });
 
-    describe('GET ALL', () => {
-        it('FETCH ALL BLOGS', async () => {
-            const res = await request(server).get('/api/blog/all');
-            expect(res.status).toBe(201);
-
-        }, 50000);
-    });
-
     describe('GET SINGLE', () => {
         it('FETCH SINGLE BLOG', async () => {
 
@@ -38,6 +30,17 @@ describe('BLOGS End points', () => {
 
             const res = await request(server).get('/api/blog/view/' + obj._id);
             expect(res.status).toBe(201);
+
+        }, 50000)
+    });
+
+
+
+    describe('GET SINGLE', () => {
+        it('Should catch error when invalid blogId is looked up', async () => {
+
+            const res = await request(server).get('/api/blog/view/' + 'Fakeid');
+            expect(res.status).toBe(404);
 
         }, 50000)
     });
@@ -51,18 +54,6 @@ describe('BLOGS End points', () => {
                 .set("x-auth-token", signature.generateAdminSignature(payload))
                 .send({ title: 'Blog-01', content: "Blog-0101", description: 'Blog-IN-TESTING' });
             expect(res.statusCode).toBe(201);
-        }, 50000);
-    });
-
-    describe('FORBIDDEN RESOURCE', () => {
-        it("FORBIDDEN TO CREATE WHEN INVALID TOKEN", async () => {
-            const payload = { _id: new mongoose.Types.ObjectId() };
-
-            const res = await request(server)
-                .post("/api/blog/create")
-                .set("x-auth-tokenn", signature.generateAdminSignature(payload))
-                .send({ title: 'Blog-01', content: "Blog-0101", description: 'Blog-IN-TESTING' });
-            expect(res.statusCode).toBe(401);
         }, 50000);
     });
 
@@ -80,10 +71,12 @@ describe('BLOGS End points', () => {
 
     describe('UPDATE', () => {
         it("UPDATING BLOG", async () => {
+            const blog = new blogSchema();
             const payload = { _id: new mongoose.Types.ObjectId() };
             const res = await request(server)
-                .put(`/api/blog/update/62307a6df5c0041df3e57f5f`)
-                .set("x-auth-token", signature.generateAdminSignature(payload))
+
+                .put(`/api/blog/update/` + blog._id)
+                .set("x-auth-token", signature.generateUserSignature(payload))
                 .send({ title: 'Blog-01', content: "Blog-0101", description: 'Blog-IN-TESTING' });
             expect(res.statusCode).toBe(201);
         }, 50000);
@@ -99,13 +92,27 @@ describe('BLOGS End points', () => {
             expect(res.statusCode).toBe(400);
         }, 50000);
     });
-    describe('DELETE', () => {
-        it("Should DELETE Blog", async () => {
+
+
+    describe('DELETE BLOG', () => {
+        it("Should delete blog", async () => {
+            const blog = new blogSchema();
+            const payload = { _id: new mongoose.Types.ObjectId() };
+            const res = await request(server)
+                .delete(`/api/blog/delete/${blog._id}`)
+                .set("x-auth-token", signature.generateAdminSignature(payload));
+            expect(res.statusCode).toBe(201);
+        }, 50000);
+    });
+
+
+    describe('DELETE BLOG', () => {
+        it("Should Not delete a not found blog", async () => {
             const payload = { _id: new mongoose.Types.ObjectId() };
             const res = await request(server)
                 .delete(`/api/blog/delete/id`)
                 .set("x-auth-token", signature.generateAdminSignature({ id: 1 }));
-            expect(res.statusCode).toBe(201);
+            expect(res.statusCode).toBe(400);
         }, 50000);
     });
 
